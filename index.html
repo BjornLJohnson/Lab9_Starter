@@ -69,39 +69,145 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="err">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="gstart">Console Group Start</button>
+      <button id="gend">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="tstart">Start Timer</button>
+      <button id="tend">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="gerr">Trigger a Global Error</button>
     </section>
   </main>
 
   <script>
+    class InvalidOperandError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "InvalidOperandError";
+      }
+    }
+
+    const numPattern = "[0-9]+";
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+
+        if (!firstNum.match(numPattern)){
+          throw new InvalidOperandError("First operand is invalid");
+        }
+        if(!secondNum.match(numPattern)){
+          throw new InvalidOperandError("Second operand is invalid");
+        }
+
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch (e) {
+        if (e instanceof InvalidOperandError){
+          console.error("At least one of the operands is not a valid number");
+          console.error(e.message);
+        }
+        else {
+          console.log("Something went wrong");
+          throw e;
+        }
+      }
+      finally {
+        console.log("Finished calculating");
+      }
     });
 
-    let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
+    let logBtn = document.querySelector('#log');
+    logBtn.addEventListener('click', e => {
+      console.log("You clicked the console log button!");
+    });
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    let errBtn = document.querySelector('#err');
+    errBtn.addEventListener('click', e => {
+      console.error("You clicked the console error button!");
+    });
+
+    let countBtn = document.querySelector('#count');
+    countBtn.addEventListener('click', e => {
+      console.count();
+    });
+
+    let warnBtn = document.querySelector('#warn');
+    warnBtn.addEventListener('click', e => {
+      console.warn("You clicked the console warn button!");
+    });
+
+    let assertBtn = document.querySelector('#assert');
+    assertBtn.addEventListener('click', e => {
+      console.assert(false, "You clicked the console assert button!");
+    });
+
+    let clearBtn = document.querySelector('#clear');
+    clearBtn.addEventListener('click', e => {
+      console.clear();
+    });
+
+    let dirBtn = document.querySelector('#dir');
+    dirBtn.addEventListener('click', e => {
+      console.dir(document.location);
+    });
+
+    let dirxmlBtn = document.querySelector('#dirxml');
+    dirxmlBtn.addEventListener('click', e => {
+      console.dirxml(document.location);
+    });
+
+    let gstartBtn = document.querySelector('#gstart');
+    gstartBtn.addEventListener('click', e => {
+      console.group();
+    });
+
+    let gendBtn = document.querySelector('#gend');
+    gendBtn.addEventListener('click', e => {
+      console.groupEnd();
+    });
+
+    let tableBtn = document.querySelector('#table');
+    tableBtn.addEventListener('click', e => {
+      console.table(["apples", "oranges", "bananas"]);
+    });
+
+    let tstartBtn = document.querySelector('#tstart');
+    tstartBtn.addEventListener('click', e => {
+      console.time();
+    });
+
+    let tendBtn = document.querySelector('#tend');
+    tendBtn.addEventListener('click', e => {
+      console.timeEnd();
+    });
+
+    let traceBtn = document.querySelector('#trace');
+    traceBtn.addEventListener('click', e => {
+      console.trace("You clicked the console trace button!");
+    });
+
+    let gerrBtn = document.querySelector('#gerr');
+    gerrBtn.addEventListener('click', e => {
+      throw Error("You clicked the global error button!");
+    });
+
+    window.onerror = function(e) {
+      console.log("Listener found global error: " + e);
+    };
   </script>
 </body>
 
