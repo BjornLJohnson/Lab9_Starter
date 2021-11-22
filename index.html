@@ -87,7 +87,15 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "3d26840c8d454d9cb625f0f34f5b50d0"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+
+    TrackJS.track('Testing TrackJS!');
+
     class InvalidOperandError extends Error {
       constructor(message) {
         super(message);
@@ -116,6 +124,7 @@
         output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
       }
       catch (e) {
+        TrackJS.track(e.message);
         if (e instanceof InvalidOperandError){
           console.error("At least one of the operands is not a valid number");
           console.error(e.message);
